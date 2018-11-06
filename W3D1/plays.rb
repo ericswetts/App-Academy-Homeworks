@@ -48,17 +48,66 @@ class Play
         id = ?
     SQL
   end
-
-class PlayDBConnection < SQLite3::Database
-  include Singleton
-
-	def self:all
-
-	PlayDBConnection.instance.execute(<<-SQL SELECT * from playwright)
-	SQL
-	end
-
 end
 
+class Playwrights
+
+	def self.all
+	   my_data = PlayDBConnection.instance.execute("SELECT * from playwright")
+     my_data.map{ |datum| Playwrights.new(datum)}
+	end
+
+  def self.find_by_name(name)
+    name = PlayDBConnection.instance.execute(<<-SQL, name)
+      SELECT
+      *
+      FROM
+        playwrights
+      WHERE
+        name=?
+      SQL
+  end
+
+  def iniialize(options)
+    @id = options['id']
+    @name = options['name']
+    @birth_year = options['birth_year']
+  end
+
+  def create
+    raise "#{self} already in database" if self.id
+    PlayDBConnection.instance.execute(<<-SQL, self.name, self.birth_year, self.id)
+      INSERT INTO
+        playwrights (name, birth_year)
+      VALUES
+        (?)
+        SQL
+    self.id = PlayDBConnection.instance.last_insert_row_id
+  end
+
+  def update
+    raise "#{self} not in database" unless self.id
+    PlayDBConnection.instance.execute(<<-SQL, self.name, self.birth_year, self.id)
+      UPDATE
+        playwrights
+      SET
+        name = ?, birth_year = ?
+      WHERE
+        id = ?
+    SQL
+  end
+
+  def get_plays
+    raise "#{self} not in database" unless self.id
+    plays = PlayDBConnection.instance.execute(<<-SQL, self.id)
+      SELECT
+        *
+      FROM
+        plays
+      WHERE
+        playwright_id=?
+      SQL
+      plays.map{|datum| Play.new(datum)}
+  end
 
 end
