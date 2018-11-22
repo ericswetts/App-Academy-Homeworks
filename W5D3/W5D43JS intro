@@ -1,0 +1,76 @@
+
+
+function mysteryScoping1() {
+  var x = 'out of block';
+  if (true) {
+    var x = 'in block';  
+    console.log(x);
+  }
+  console.log(x);
+}
+
+//redefines x variable inside inner block regardless of scope
+
+function mysteryScoping2() {
+  const x = 'out of block';
+  if (true) {
+    const x = 'in block';  
+    console.log(x);
+  }
+  console.log(x);
+}
+
+//returns both values
+
+function mysteryScoping3() {
+  const x = 'out of block';
+  if (true) {
+    var x = 'in block';  
+    console.log(x);
+  }
+  console.log(x);
+}
+
+//errors out. var x not initialized 
+
+
+function mysteryScoping4() {
+  let x = 'out of block';
+  if (true) {
+    let x = 'in block';  
+    console.log(x);
+  }
+  console.log(x);
+}
+
+//variables are constrained to local blocks
+
+
+function mysteryScoping5() {
+  let x = 'out of block';
+  if (true) {
+    let x = 'in block';  
+    console.log(x);
+  }
+  let x = 'out of block again';
+  console.log(x);
+}
+
+//x has already been defined in the outer scope and reassignment
+is not allowed
+
+
+
+madLib
+
+function madLib(str1, str2, str3) {
+let x = str1.prototype.toUpperCase();
+console.log(str1);
+let y = str2.prototype.toUpperCase();
+let z = str3.prototype.toUpperCase();
+log.console("We shall " + x + " the " + y + " " + z + ".");
+}
+
+madLib("woot", "woot","woot")
+
+
